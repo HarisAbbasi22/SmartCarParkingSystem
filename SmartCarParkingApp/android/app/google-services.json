@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "449000179160",
+    "project_id": "carparking-19ebb",
+    "storage_bucket": "carparking-19ebb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449000179160:android:7b2012edcb316e6b78dead",
+        "android_client_info": {
+          "package_name": "com.carparking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "449000179160-3g7a555e4m30o24iig35sek9np2hotkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQiDkMYL1cKsUwPdNFWd1wxlbTTWBgCBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "449000179160-3g7a555e4m30o24iig35sek9np2hotkj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
