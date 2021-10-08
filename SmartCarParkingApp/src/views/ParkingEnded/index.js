@@ -132,7 +132,7 @@ class index extends Component {
                     parkingFee: this.state.amount,
                   });
               });
-            this.props.navigation.replace('wallet');
+            this.props.navigation.replace('wallet', {rate: this.state.amount});
           }}>
           <Text style={styles.buttonText}>
             PROCEED • Rs.{this.state.amount}

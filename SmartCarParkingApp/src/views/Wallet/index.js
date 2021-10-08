@@ -22,6 +22,7 @@ class index extends Component {
       payoneer: '',
       jazzcash: '',
       easypaisa: '',
+      rate: this.props.route.params?.rate,
     };
   }
 
@@ -37,7 +38,11 @@ class index extends Component {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => this.props.navigation.navigate('AddCreditCard')}>
+          onPress={() =>
+            this.props.navigation.navigate('AddCreditCard', {
+              rate: this.state.rate,
+            })
+          }>
           <Text style={styles.buttonText}>Credit / Debit Card</Text>
         </TouchableOpacity>
         <TouchableOpacity

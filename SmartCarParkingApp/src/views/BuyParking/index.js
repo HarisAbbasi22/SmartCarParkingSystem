@@ -10,9 +10,24 @@ export default class index extends Component {
     sixMonthPackage: '',
     twelveMonthPackage: '',
     packages: [],
+    selectedPackage_id: null,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.props.navigation.addListener('focus', () => this.getData());
+    this.getData();
+  }
+
+  getData = async () => {
+    await firestore()
+      .collection('Users')
+      .doc(auth().currentUser.uid)
+      .get()
+      .then(data => {
+        this.setState({
+          selectedPackage_id: data.data().package_id,
+        });
+      });
     firestore()
       .collection('Packages')
       .get()
@@ -25,7 +40,7 @@ export default class index extends Component {
           packages: arr,
         });
       });
-  }
+  };
 
   cancel = packages => {
     if (this.props.route.params && this.props.route.params.from === 'Home') {
@@ -44,18 +59,24 @@ export default class index extends Component {
     }
   };
 
-  onPackage = (package_id, package_name) => {
-    firestore()
-      .collection('Users')
-      .doc(auth().currentUser.uid)
-      .update({
-        seasonParker: package_id ? true : false,
-        package_id,
-      })
-      .then(data => {
-        Alert.alert('Success', `You have bought ${package_name}`);
-        this.props.navigation.goBack();
-      });
+  onPackage = (package_id, package_name, rate) => {
+    // firestore()
+    //   .collection('Users')
+    //   .doc(auth().currentUser.uid)
+    //   .update({
+    //     seasonParker: package_id ? true : false,
+    //     package_id,
+    //   })
+    //   .then(data => {
+    //     Alert.alert('Success', `You have bought ${package_name}`);
+    //     this.props.navigation.goBack();
+    //   });
+    this.props.navigation.navigate('AddCreditCard', {
+      from: 'BuyPackage',
+      package_id,
+      package_name,
+      rate,
+    });
   };
 
   render() {
@@ -72,13 +93,19 @@ export default class index extends Component {
             data={this.state.packages}
             renderItem={({item, index}) => (
               <TouchableOpacity
-                onPress={() => this.onPackage(item.id, item.name)}
+                onPress={() => this.onPackage(item.id, item.name, item.rate)}
                 style={{
                   paddingVertical: 15,
                   borderWidth: 1,
                   borderRadius: 8,
-                  borderColor: '#dadae8',
-                  backgroundColor: '#FFD428',
+                  borderColor:
+                    this.state.selectedPackage_id === item.id
+                      ? '#FFD428'
+                      : '#dadae8',
+                  backgroundColor:
+                    this.state.selectedPackage_id === item.id
+                      ? 'white'
+                      : '#FFD428',
                   marginTop: 50,
                 }}>
                 <Text
