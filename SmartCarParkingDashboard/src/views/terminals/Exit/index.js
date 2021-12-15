@@ -12,6 +12,7 @@ import {
 } from "@coreui/react";
 
 const fields = [
+  "name",
   {
     key: "LicensePlateNo",
     label: "licensePlateNumber",
@@ -31,27 +32,51 @@ const fields = [
  * @function Exit
  **/
 const Exit = () => {
-  const [exitRecords, setExitRecords] = useState("");
-
+  const [exitRecords, setExitRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     getExitRecords();
   }, []);
 
   async function getExitRecords() {
-    const dataQuery = query(collection(db, "Users"), where("time", "!=", null));
+    setLoading(true);
+
+    const dataQuery = query(collection(db, "Users"));
     onSnapshot(dataQuery, (snapshot) => {
-      const seasonData = [];
       snapshot.forEach((doc) => {
-        seasonData.push({
-          id: doc.id,
-          ...doc.data(),
-          time: moment(doc.data().time).format("LTS"),
-        });
-        console.log(seasonData);
-        setExitRecords(...[seasonData]);
+        getParkingHistory(doc.data(), doc.id);
       });
     });
   }
+
+
+  const getParkingHistory = (doc1, id) => {
+    db.collection("Users")
+      .doc(id)
+      .collection("parkingHistory")
+      .orderBy("endTime", "desc")
+      .get()
+      .then((snapshot) => {
+        const data = exitRecords;
+        snapshot.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            ...doc.data(),
+            ...doc1,
+            time: moment(doc.data().endTime).format("llll"),
+          });
+        });
+        setExitRecords([...data]);
+        setLoading(false)
+
+      })
+      .catch((error) => {
+        console.log(error, "error from get Parking History");
+        setLoading(false)
+
+      });
+  };
+
 
   return (
     <>
@@ -71,6 +96,7 @@ const Exit = () => {
                   hover
                   striped
                   bordered
+                  loading={loading}
                   size="sm"
                   itemsPerPage={10}
                   pagination

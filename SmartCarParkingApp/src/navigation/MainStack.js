@@ -1,75 +1,95 @@
-import React from 'react';
-import {View, Text, Image} from 'react-native';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import Home from '../views/Home';
-import AddVehicle from '../views/AddVehicle';
-import RegisteredVehicles from '../views/RegisteredVehicles';
-import BuyParking from '../views/BuyParking';
-import Log from '../views/Log';
-import Wallet from '../views/Wallet';
-import ParkingSlots from '../views/ParkingSlots';
-import AddCreditCard from '../views/AddCreditCard';
-import ParkingEnded from '../views/ParkingEnded';
-import ParkingTime from '../views/ParkingTime';
-import Logout from '../views/Logout';
-import AuthStack from './AuthStack';
+import React from "react";
+import { View, Text, Image } from "react-native";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Home from "../views/Home";
+import AddVehicle from "../views/AddVehicle";
+import RegisteredVehicles from "../views/RegisteredVehicles";
+import BuyParking from "../views/BuyParking";
+import Log from "../views/Log";
+import Wallet from "../views/Wallet";
+import ParkingSlots from "../views/ParkingSlots";
+import AddCreditCard from "../views/AddCreditCard";
+import ParkingEnded from "../views/ParkingEnded";
+import ParkingTime from "../views/ParkingTime";
+import Logout from "../views/Logout";
+import AuthStack from "./AuthStack";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+
 const Stack = createStackNavigator();
 const Stack2 = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
+function getHeaderTitle(route) {
+  // If the focused route is not found, we need to assume it's the initial screen
+  // This can happen during if there hasn't been any navigation inside the screen
+  // In our case, it's "Feed" as that's the first screen inside the navigator
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
+
+  switch (routeName) {
+    case "Home":
+      return "Home";
+
+    default:
+      return "";
+  }
+}
 export default class MainStack extends React.Component {
   createHomeStack = () => (
     <Stack.Navigator initialRouteName={this.props.initialRouteName}>
       <Stack.Screen
-        name={'home'}
+        name={"home"}
         component={Home}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="ParkingSlots"
         component={ParkingSlots}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="ParkingEnded"
         component={ParkingEnded}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="ParkingTime"
         component={ParkingTime}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
 
       <Stack.Screen
-        name={'BuyParking'}
+        name={"BuyParking"}
         component={BuyParking}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
-        name={'Log'}
+        name={"Log"}
         component={Log}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
-        name={'wallet'}
+        name={"wallet"}
         component={Wallet}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="AddCreditCard"
         component={AddCreditCard}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="AddVehicle"
         component={AddVehicle}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="AuthStack"
         component={AuthStack}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -78,17 +98,17 @@ export default class MainStack extends React.Component {
       <Stack.Screen
         name="RegisteredVehicles"
         component={RegisteredVehicles}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="AddVehicle"
         component={AddVehicle}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
-        name={'BuyParking'}
+        name={"BuyParking"}
         component={BuyParking}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -97,12 +117,12 @@ export default class MainStack extends React.Component {
       <Stack.Screen
         name="Wallet"
         component={Wallet}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
       <Stack.Screen
         name="AddCreditCard"
         component={AddCreditCard}
-        options={{title: '', headerTitleAlign: 'center', headerShown: false}}
+        options={{ title: "", headerTitleAlign: "center", headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -113,27 +133,29 @@ export default class MainStack extends React.Component {
         <Drawer.Screen
           name="Home"
           children={this.createHomeStack}
-          options={{headerTitle: 'Home', headerShown: true}}
+          options={({ route }) => ({
+            headerTitle: getHeaderTitle(route),
+          })}
         />
         <Drawer.Screen
           name="Vehicle"
           children={this.createVehicleStack}
-          options={{headerTitle: 'Vehicle', headerShown: true}}
+          options={{ headerTitle: "Vehicle", headerShown: true }}
         />
         <Drawer.Screen
           name="Parking History"
           component={Log}
-          options={{headerTitle: 'Parking History', headerShown: true}}
+          options={{ headerTitle: "Parking History", headerShown: true }}
         />
         <Drawer.Screen
           name="Packages"
           component={BuyParking}
-          options={{headerTitle: 'Buy Parking Packages', headerShown: true}}
+          options={{ headerTitle: "Buy Parking Packages", headerShown: true }}
         />
         <Drawer.Screen
           name="Logout"
           component={Logout}
-          options={{headerTitle: '', headerShown: true}}
+          options={{ headerTitle: "", headerShown: true }}
         />
       </Drawer.Navigator>
     );

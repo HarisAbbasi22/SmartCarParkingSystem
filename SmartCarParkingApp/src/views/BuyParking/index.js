@@ -1,39 +1,39 @@
-import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, FlatList, Alert} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import React, { Component } from "react";
+import { Text, View, TouchableOpacity, FlatList, Alert } from "react-native";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
 
 export default class index extends Component {
   state = {
-    oneMonthPackage: '',
-    threeMonthPackage: '',
-    sixMonthPackage: '',
-    twelveMonthPackage: '',
+    oneMonthPackage: "",
+    threeMonthPackage: "",
+    sixMonthPackage: "",
+    twelveMonthPackage: "",
     packages: [],
     selectedPackage_id: null,
   };
 
   async componentDidMount() {
-    this.props.navigation.addListener('focus', () => this.getData());
+    this.props.navigation.addListener("focus", () => this.getData());
     this.getData();
   }
 
   getData = async () => {
     await firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(auth().currentUser.uid)
       .get()
-      .then(data => {
+      .then((data) => {
         this.setState({
           selectedPackage_id: data.data().package_id,
         });
       });
     firestore()
-      .collection('Packages')
+      .collection("Packages")
       .get()
-      .then(data => {
+      .then((data) => {
         let arr = [];
-        data.forEach(doc => {
+        data.forEach((doc) => {
           arr.push(doc.data());
         });
         this.setState({
@@ -42,16 +42,16 @@ export default class index extends Component {
       });
   };
 
-  cancel = packages => {
-    if (this.props.route.params && this.props.route.params.from === 'Home') {
+  cancel = (packages) => {
+    if (this.props.route.params && this.props.route.params.from === "Home") {
       firestore()
-        .collection('Users')
+        .collection("Users")
         .doc(auth().currentUser.uid)
         .update({
-          seasonParker: packages ? true : false,
+          parker_type: packages ? "season" : "visitor",
           packages,
         })
-        .then(data => {
+        .then((data) => {
           this.props.navigation.goBack();
         });
     } else {
@@ -71,8 +71,8 @@ export default class index extends Component {
     //     Alert.alert('Success', `You have bought ${package_name}`);
     //     this.props.navigation.goBack();
     //   });
-    this.props.navigation.navigate('AddCreditCard', {
-      from: 'BuyPackage',
+    this.props.navigation.navigate("AddCreditCard", {
+      from: "BuyPackage",
       package_id,
       package_name,
       rate,
@@ -86,12 +86,13 @@ export default class index extends Component {
           flex: 1,
           padding: 30,
           paddingTop: 20,
-          backgroundColor: '#FFFFFF',
-        }}>
+          backgroundColor: "#FFFFFF",
+        }}
+      >
         <View>
           <FlatList
             data={this.state.packages}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
               <TouchableOpacity
                 onPress={() => this.onPackage(item.id, item.name, item.rate)}
                 style={{
@@ -100,23 +101,25 @@ export default class index extends Component {
                   borderRadius: 8,
                   borderColor:
                     this.state.selectedPackage_id === item.id
-                      ? '#FFD428'
-                      : '#dadae8',
+                      ? "#FFD428"
+                      : "#dadae8",
                   backgroundColor:
                     this.state.selectedPackage_id === item.id
-                      ? 'white'
-                      : '#FFD428',
+                      ? "white"
+                      : "#FFD428",
                   marginTop: 50,
-                }}>
+                }}
+              >
                 <Text
                   style={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
+                    textAlign: "center",
+                    fontWeight: "bold",
                     fontSize: 18,
-                    color: 'black',
-                  }}>
+                    color: "black",
+                  }}
+                >
                   {item.name} @ Rs.{item.rate} /
-                  {item.name.includes('Month') ? ' month' : ' year'}
+                  {item.name.includes("Month") ? " month" : " year"}
                 </Text>
               </TouchableOpacity>
             )}
@@ -127,11 +130,13 @@ export default class index extends Component {
               paddingVertical: 15,
               borderWidth: 1,
               borderRadius: 8,
-              borderColor: '#dadae8',
+              borderColor: "#dadae8",
               marginTop: 50,
-            }}>
+            }}
+          >
             <Text
-              style={{textAlign: 'center', fontWeight: 'bold', fontSize: 18}}>
+              style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}
+            >
               CANCEL
             </Text>
           </TouchableOpacity>

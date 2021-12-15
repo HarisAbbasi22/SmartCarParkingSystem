@@ -1,11 +1,11 @@
-import React from 'react';
-import {View, ActivityIndicator, Text} from 'react-native';
-import MainStack from './MainStack';
-import AuthStack from './AuthStack';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {MaterialIndicator} from 'react-native-indicators';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from "react";
+import { View, ActivityIndicator, Text } from "react-native";
+import MainStack from "./MainStack";
+import AuthStack from "./AuthStack";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import { MaterialIndicator } from "react-native-indicators";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class Root extends React.Component {
   constructor(props) {
@@ -13,31 +13,31 @@ class Root extends React.Component {
     this.state = {
       loader: true,
       Login: false,
-      routeName: '',
+      routeName: "",
       Verify: false,
     };
   }
 
   async componentDidMount() {
-    const checkpoint = await AsyncStorage.getItem('checkpoint');
-    const uid = await AsyncStorage.getItem('uid');
-    console.log('hello ', uid, checkpoint);
+    const checkpoint = await AsyncStorage.getItem("checkpoint");
+    const uid = await AsyncStorage.getItem("uid");
+    console.log("hello ", uid, checkpoint);
     if (uid && checkpoint) {
-      console.log('asdfghjkoiuytzxcvbnm');
-      this.setState({routeName: checkpoint, Login: false, loader: false});
+      console.log("asdfghjkoiuytzxcvbnm");
+      this.setState({ routeName: checkpoint, Login: false, loader: false });
     } else if (uid && !checkpoint) {
       await firestore()
-        .collection('Users')
+        .collection("Users")
         .doc(auth().currentUser.uid)
         .get()
-        .then(data => {
+        .then((data) => {
           if (data.data().time) {
-            this.setState({routeName: 'ParkingTime'});
+            this.setState({ routeName: "ParkingTime" });
           } else if (data.data().parkingEnded) {
-            console.log('parking end');
-            this.setState({routeName: 'ParkingEnded'});
+            console.log("parking end");
+            this.setState({ routeName: "ParkingEnded" });
           } else {
-            this.setState({routeName: 'home'});
+            this.setState({ routeName: "home" });
           }
         });
       this.setState({
@@ -54,7 +54,7 @@ class Root extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {this.state.loader ? null : this.state.Login ? (
           <MainStack initialRouteName={this.state.routeName} />
         ) : (

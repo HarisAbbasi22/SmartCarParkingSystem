@@ -44,26 +44,8 @@ const VisitorParkers = () => {
   }, []);
 
   const getVisitors = () => {
-    // setloading(true);
-
-    // try {
-    //   const dataQuery = query(
-    //     collection(db, "Users"),
-    //     where("seasonParker", "==", false)
-    //   );
-    //   onSnapshot(dataQuery, (snapshot) => {
-    //     snapshot.forEach((doc) => {
-    //       getParkingHistory(doc);
-    //     });
-    //     setloading(false);
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   setloading(false);
-    // }
-
     db.collection("Users")
-      .where("seasonParker", "==", false)
+      .where("parker_type", "==", "visitor")
       .get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
@@ -122,24 +104,20 @@ const VisitorParkers = () => {
               <h3> Date: {moment().format("L")}</h3>
             </CCardHeader>
 
-            {visitors ? (
-              <CCardBody>
-                <CDataTable
-                  items={visitors}
-                  fields={fields}
-                  dark
-                  hover
-                  loading={loading}
-                  striped
-                  bordered
-                  size="sm"
-                  itemsPerPage={10}
-                  pagination
-                />
-              </CCardBody>
-            ) : (
-              <h2>No visitors</h2>
-            )}
+            <CCardBody>
+              <CDataTable
+                items={visitors}
+                fields={fields}
+                dark
+                hover
+                loading={loading}
+                striped
+                bordered
+                size="sm"
+                itemsPerPage={10}
+                pagination
+              />
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>

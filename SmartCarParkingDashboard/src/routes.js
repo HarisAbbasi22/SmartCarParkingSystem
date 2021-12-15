@@ -1,12 +1,24 @@
 import React from "react";
 
+
+// slot manangement 
+import SlotManagement from "./views/Slots/SlotManagement";
+import SlotAddUser from "./views/Slots/SlotAddUser";
+
+// lot manangement 
+import LotManagement from "./views/Lots/LotManagement";
+
+
+// parkers
 import VisitorParkers from "./views/parkers/VisitorParkers/index";
 import SeasonParkers from "./views/parkers/SeasonParkers/index";
+import DisabledParkers from "./views/parkers/DisabledParkers/index";
+
+
+// terminals
 import Entrance from "./views/terminals/Entrance";
 import Exit from "./views/terminals/Exit";
 
-// const Entrance = React.lazy(() => import("./views/terminals/Entrance"));
-// const Exit = React.lazy(() => import("./views/terminals/Exit"));
 
 const Toaster = React.lazy(() =>
   import("./views/notifications/toaster/Toaster")
@@ -152,10 +164,24 @@ const routes = [
     name: "Season Parkers",
     component: SeasonParkers,
   },
+  {
+    path: "/parkers/disabled-parkers",
+    name: "Disabled Parkers",
+    component: DisabledParkers,
+  },
 
   { path: "/terminal", name: "Terminals", component: Entrance, exact: true },
   { path: "/terminal/entrance", name: "Entrance", component: Entrance },
   { path: "/terminal/exit", name: "Exit", component: Exit },
+
+  // slots
+  { path: "/slots", name: "Slots", component: SlotManagement, exact: true },
+  { path: "/slots/slot-management", name: "Slot Management", component: SlotManagement },
+  { path: "/slots/slot-add-user", name: "All Parkers Slots", component: SlotAddUser },
+
+  // lots
+  { path: "/lots", name: "Parking Lots", component: LotManagement, exact: true },
+
 
   { path: "/rates", name: "Rates", component: Rates },
 

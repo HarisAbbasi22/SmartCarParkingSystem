@@ -15,6 +15,7 @@ import {
 import entranceData from "../../users/EntranceData";
 
 const fields = [
+  "name",
   {
     key: "LicensePlateNo",
     label: "licensePlateNumber",
@@ -35,27 +36,54 @@ const fields = [
  * @function Entrance
  **/
 const Entrance = (props) => {
-  const [entranceRecords, setEntranceRecords] = useState("");
+  const [entranceRecords, setEntranceRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getEntranceRecords();
+
   }, []);
 
   async function getEntranceRecords() {
-    const dataQuery = query(collection(db, "Users"), where("time", "!=", null));
+    setLoading(true);
+
+    const dataQuery = query(collection(db, "Users"));
+
+    // , where("time", "!=", null)
     onSnapshot(dataQuery, (snapshot) => {
-      const seasonData = [];
       snapshot.forEach((doc) => {
-        seasonData.push({
-          id: doc.id,
-          ...doc.data(),
-          time: moment(doc.data().time).format("LTS"),
-        });
-        console.log(seasonData);
-        setEntranceRecords(...[seasonData]);
+        getParkingHistory(doc.data(), doc.id);
       });
     });
   }
+
+  const getParkingHistory = (doc1, id) => {
+    db.collection("Users")
+      .doc(id)
+      .collection("parkingHistory")
+      .orderBy("endTime", "desc")
+      .get()
+      .then((snapshot) => {
+        const data = entranceRecords;
+        snapshot.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            ...doc.data(),
+            ...doc1,
+            time: moment(doc.data().startTime).format("llll"),
+          });
+        });
+        setEntranceRecords([...data]);
+        setLoading(false)
+
+      })
+      .catch((error) => {
+        setLoading(false)
+
+        console.log(error, "error from get Parking History");
+      });
+  };
+
 
   return (
     <>
@@ -74,6 +102,7 @@ const Entrance = (props) => {
                   fields={fields}
                   dark
                   hover
+                  loading={loading}
                   striped
                   bordered
                   size="sm"

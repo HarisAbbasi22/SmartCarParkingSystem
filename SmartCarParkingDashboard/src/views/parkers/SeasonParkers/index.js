@@ -36,24 +36,48 @@ const SeasonParkers = (props) => {
   const [seasonParker, setSeasonParker] = useState([]);
   const [loading, setloading] = useState(false);
 
+
   useEffect(() => {
-    getSeasonParker();
+    getPackages();
+
   }, []);
 
-  const getSeasonParker = () => {
+  const getPackages = async () => {
+    const packages = await db.collection("Packages").get();
+    const packagesArray = packages.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    });
+
+    getSeasonParker(packagesArray);
+  };
+
+
+  const handlePackageName = (id, packagesArray) => {
+    const packageName = packagesArray.find((item) => item.id === id);
+    return packageName?.name ? packageName.name : "none";
+  };
+
+
+  const getSeasonParker = (packagesArray) => {
     setloading(true);
 
     try {
       const dataQuery = query(
         collection(db, "Users"),
-        where("seasonParker", "==", true)
+        where("parker_type", "==", "season")
+
       );
       onSnapshot(dataQuery, (snapshot) => {
         const seasonData = [];
         snapshot.forEach((doc) => {
+
+          console.log(doc.data().package_id)
           seasonData.push({
             id: doc.id,
-            parkingPackage: doc.data().packages,
+            parkingPackage: handlePackageName(doc.data().package_id, packagesArray),
             ...doc.data(),
           });
         });
@@ -66,27 +90,6 @@ const SeasonParkers = (props) => {
     }
   };
 
-  // const getUserPackage = (doc) => {
-  //   const id = doc.data().package_id;
-  //   db.collection("Packages")
-  //     .doc(id)
-  //     .get()
-  //     .then((snapshot) => {
-  //       console.log(snapshot.data(), "daas");
-  //       const seasonData = [];
-  //       seasonData.push({
-  //         id: doc.id,
-  //         parkingPackage: snapshot.data().name,
-  //         ...doc.data(),
-  //       });
-  //       setloading(false);
-  //       setSeasonParker(...[seasonData]);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error, "error form getUserPackage");
-  //       setloading(false);
-  //     });
-  // };
 
   return (
     <>

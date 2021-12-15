@@ -1,5 +1,5 @@
-import {anyTypeAnnotation} from '@babel/types';
-import React, {Component} from 'react';
+import { anyTypeAnnotation } from "@babel/types";
+import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
@@ -7,10 +7,10 @@ import {
   View,
   TouchableOpacity,
   Alert,
-} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import moment from 'moment';
+} from "react-native";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+import moment from "moment";
 
 let res = [];
 let interval = 0;
@@ -21,7 +21,7 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      s: '',
+      s: "",
       Press: true,
       minutes: 0,
       hours: 0,
@@ -42,27 +42,27 @@ export default class index extends Component {
     const user = auth().currentUser;
 
     firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         let timestamp = snapshot.data().time;
-        this.setState({timestamp});
+        this.setState({ timestamp });
         let sec = 0;
         let min = 0;
         let hour = 0;
         if (timestamp) {
-          sec = moment().diff(moment(timestamp), 'seconds') % 60;
-          min = moment().diff(moment(timestamp), 'minutes') % 60;
-          hour = moment().diff(moment(timestamp), 'hours');
+          sec = moment().diff(moment(timestamp), "seconds") % 60;
+          min = moment().diff(moment(timestamp), "minutes") % 60;
+          hour = moment().diff(moment(timestamp), "hours");
 
           let time_in_seconds = `${hour}:${min}:${sec}`;
 
-          console.log('time', time_in_seconds);
-          console.log('TIME', timestamp);
-          console.log('sec', sec);
-          console.log('min', min);
-          console.log('ohur', hour);
+          console.log("time", time_in_seconds);
+          console.log("TIME", timestamp);
+          console.log("sec", sec);
+          console.log("min", min);
+          console.log("ohur", hour);
 
           this.setState(
             {
@@ -73,10 +73,10 @@ export default class index extends Component {
             },
             () => {
               if (this.state.timestamp) {
-                console.log('TIMESTAMP', this.state.timestamp);
+                console.log("TIMESTAMP", this.state.timestamp);
                 this.startTimer();
               }
-            },
+            }
           );
         } else {
           this.setState(
@@ -88,30 +88,30 @@ export default class index extends Component {
             },
             () => {
               this.startTimer();
-            },
+            }
           );
         }
       });
   };
 
   startTimer = async () => {
-    let {seconds, minutes, hours, Press, timestamp} = this.state;
+    let { seconds, minutes, hours, Press, timestamp } = this.state;
     await this.myTimer();
     interval = setInterval(() => {
       if (seconds < 60) {
         if (seconds == 59) {
           seconds = 0;
           minutes++;
-          this.setState({seconds, minutes});
+          this.setState({ seconds, minutes });
         } else {
           seconds++;
-          this.setState({seconds});
+          this.setState({ seconds });
         }
       }
       if (minutes >= 60) {
         minutes = 0;
         hours++;
-        this.setState({minutes, hours});
+        this.setState({ minutes, hours });
       }
     }, 1000);
   };
@@ -119,45 +119,45 @@ export default class index extends Component {
   stopTimer = async () => {
     const user = auth().currentUser;
 
-    let {timestamp} = this.state;
-    let sec = moment().diff(moment(timestamp), 'seconds') % 60;
-    let min = moment().diff(moment(timestamp), 'minutes') % 60;
-    let hour = moment().diff(moment(timestamp), 'hours');
-    let totalTime = '' + hour + ':' + min + ':' + sec;
-    console.log('', timestamp, sec, min, hour, totalTime);
+    let { timestamp } = this.state;
+    let sec = moment().diff(moment(timestamp), "seconds") % 60;
+    let min = moment().diff(moment(timestamp), "minutes") % 60;
+    let hour = moment().diff(moment(timestamp), "hours");
+    let totalTime = "" + hour + ":" + min + ":" + sec;
+    console.log("", timestamp, sec, min, hour, totalTime);
     await firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
-      .collection('parkingHistory')
+      .collection("parkingHistory")
       .add({
         startTime: timestamp,
-        endTime: parseInt(moment().format('x')),
+        endTime: parseInt(moment().format("x")),
         totalTime,
       });
-    await firestore().collection('Users').doc(user.uid).update({
+    await firestore().collection("Users").doc(user.uid).update({
       time: null,
     });
     await firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
       .get()
-      .then(data => {
-        console.log('DATA', data.data().slot_id);
-        firestore().collection('AllSlots').doc(data.data().slot_id).update({
+      .then((data) => {
+        console.log("DATA", data.data().slot_id);
+        firestore().collection("AllSlots").doc(data.data().slot_id).update({
           booked: false,
         });
       });
 
     await firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
       .get()
-      .then(user_data => {
-        if (user_data.data().seasonParker) {
-          Alert.alert('Thank you!', 'Have a safe journey.');
-          this.props.navigation.replace('home');
+      .then((user_data) => {
+        if (user_data.data().parker_type === "season") {
+          Alert.alert("Thank you!", "Have a safe journey.");
+          this.props.navigation.replace("home");
         } else {
-          this.props.navigation.replace('ParkingEnded');
+          this.props.navigation.replace("ParkingEnded");
         }
       });
     this.setState({
@@ -171,41 +171,41 @@ export default class index extends Component {
     const user = auth().currentUser;
 
     firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
       .get()
-      .then(snapshot => {
+      .then((snapshot) => {
         PreTimeStamp = snapshot.data().time;
         let sec = 0;
         let min = 0;
         let hour = 0;
         if (PreTimeStamp) {
-          sec = moment().diff(moment(PreTimeStamp), 'seconds');
-          min = moment().diff(moment(PreTimeStamp), 'minutes');
-          hour = moment().diff(moment(PreTimeStamp), 'hours');
-          console.log('TIME', PreTimeStamp);
-          console.log('sec', sec);
-          console.log('min', min);
-          console.log('ohur', hour);
+          sec = moment().diff(moment(PreTimeStamp), "seconds");
+          min = moment().diff(moment(PreTimeStamp), "minutes");
+          hour = moment().diff(moment(PreTimeStamp), "hours");
+          console.log("TIME", PreTimeStamp);
+          console.log("sec", sec);
+          console.log("min", min);
+          console.log("ohur", hour);
 
           while (sec <= 60) {
             if (sec == 60) {
-              this.setState({seconds: 0});
+              this.setState({ seconds: 0 });
               break;
             } else {
               sec = sec + 1;
-              this.setState({seconds: sec});
+              this.setState({ seconds: sec });
             }
           }
 
-          console.log('ADD SEC:', sec);
+          console.log("ADD SEC:", sec);
         } else if (PreTimeStamp === 0) {
           sec++;
           while (sec <= 60) {
             if (sec == 60) {
               break;
             } else {
-              this.setState({seconds: sec});
+              this.setState({ seconds: sec });
               sec = sec + 1;
             }
           }
@@ -213,62 +213,71 @@ export default class index extends Component {
             if (min == 60) {
               break;
             } else {
-              this.setState({minutes: min});
+              this.setState({ minutes: min });
               min = min + 1;
             }
           }
         }
 
-        console.log('ADD SEC:', sec);
+        console.log("ADD SEC:", sec);
       });
   };
 
   myTimer = async () => {
     const user = auth().currentUser;
     this.setState({
-      timestamp: parseInt(moment().format('x')),
+      timestamp: parseInt(moment().format("x")),
     });
     await firestore()
-      .collection('Users')
+      .collection("Users")
       .doc(user.uid)
       .update({
-        time: parseInt(moment().format('x')),
+        time: parseInt(moment().format("x")),
       });
+  };
+
+  pad = (n) => {
+    return n < 10 ? "0" + n : n;
   };
 
   render() {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {!this.state.Press ? (
           <>
-            <Text style={{fontSize: 50, textAlign: 'center', marginBottom: 30}}>
-              {Math.round(this.state.hours)}:{Math.round(this.state.minutes)}:
-              {Math.round(this.state.seconds)}
+            <Text
+              style={{ fontSize: 50, textAlign: "center", marginBottom: 30 }}
+            >
+              {this.pad(Math.round(this.state.hours))}:
+              {this.pad(Math.round(this.state.minutes))}:
+              {this.pad(Math.round(this.state.seconds))}
             </Text>
             <TouchableOpacity
               onPress={() => {
                 this.stopTimer();
               }}
               style={{
-                backgroundColor: 'red',
+                backgroundColor: "red",
                 paddingHorizontal: 30,
                 paddingVertical: 10,
-              }}>
-              <Text style={{fontSize: 18, color: 'white'}}>STOP</Text>
+              }}
+            >
+              <Text style={{ fontSize: 18, color: "white" }}>STOP</Text>
             </TouchableOpacity>
           </>
         ) : (
           <TouchableOpacity
             onPress={() => {
-              this.setState({Press: false});
+              this.setState({ Press: false });
               this.startTimer();
             }}
             style={{
-              backgroundColor: 'red',
+              backgroundColor: "red",
               paddingHorizontal: 30,
               paddingVertical: 10,
-            }}>
-            <Text style={{fontSize: 18, color: 'white'}}>START</Text>
+            }}
+          >
+            <Text style={{ fontSize: 18, color: "white" }}>START</Text>
           </TouchableOpacity>
         )}
       </View>

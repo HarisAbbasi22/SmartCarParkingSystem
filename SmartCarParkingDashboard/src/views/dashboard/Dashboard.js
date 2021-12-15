@@ -72,13 +72,16 @@ const Dashboard = () => {
           });
         });
         const visitorParker = parkerData.filter((parker) => {
-          return parker.seasonParker === false;
+          return parker.parker_type === "visitor";
         });
         const seasonParker = parkerData.filter((parker) => {
-          return parker.seasonParker === true;
+          return parker.parker_type === "season";
+        });
+        const disabledParker = parkerData.filter((parker) => {
+          return parker.parker_type === "disabled";
         });
         console.log({ parkerData, visitorParker, seasonParker });
-        setparkers({ parkerData, visitorParker, seasonParker });
+        setparkers({ parkerData, visitorParker, seasonParker, disabledParker });
       });
     } catch (error) {
       console.log(error);
@@ -101,6 +104,15 @@ const Dashboard = () => {
           <CWidgetProgressIcon
             header={parkers?.seasonParker?.length}
             text="Season Parkers"
+            color="green"
+          >
+            <CIcon name="cil-people" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+        <CCol sm="7" md="3">
+          <CWidgetProgressIcon
+            header={parkers?.disabledParker?.length}
+            text="Disabled Parkers"
             color="green"
           >
             <CIcon name="cil-people" height="36" />
@@ -148,7 +160,7 @@ const Dashboard = () => {
               <CRow>
                 <CCol xs="12" md="6" xl="6">
                   <CRow>
-                    <CCol sm="6">
+                    <CCol sm="4">
                       <CCallout color="info">
                         <small className="text-muted">Visitor Parkers</small>
                         <br />
@@ -157,12 +169,21 @@ const Dashboard = () => {
                         </strong>
                       </CCallout>
                     </CCol>
-                    <CCol sm="6">
+                    <CCol sm="4">
                       <CCallout color="danger">
                         <small className="text-muted">Season Parkers</small>
                         <br />
                         <strong className="h4">
                           {parkers?.seasonParker?.length}
+                        </strong>
+                      </CCallout>
+                    </CCol>
+                    <CCol sm="4">
+                      <CCallout color="success">
+                        <small className="text-muted">disabled Parkers</small>
+                        <br />
+                        <strong className="h4">
+                          {parkers?.disabledParker?.length}
                         </strong>
                       </CCallout>
                     </CCol>
@@ -185,6 +206,11 @@ const Dashboard = () => {
                         color="danger"
                         value="78"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
                     </div>
                   </div>
                   <div className="progress-group mb-4">
@@ -201,6 +227,11 @@ const Dashboard = () => {
                         className="progress-xs"
                         color="danger"
                         value="94"
+                      />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
                       />
                     </div>
                   </div>
@@ -219,6 +250,12 @@ const Dashboard = () => {
                         color="danger"
                         value="67"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
+
                     </div>
                   </div>
                   <div className="progress-group mb-4">
@@ -236,6 +273,12 @@ const Dashboard = () => {
                         color="danger"
                         value="91"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
+
                     </div>
                   </div>
                   <div className="progress-group mb-4">
@@ -253,6 +296,12 @@ const Dashboard = () => {
                         color="danger"
                         value="73"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
+
                     </div>
                   </div>
                   <div className="progress-group mb-4">
@@ -270,6 +319,12 @@ const Dashboard = () => {
                         color="danger"
                         value="82"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
+
                     </div>
                   </div>
                   <div className="progress-group mb-4">
@@ -287,6 +342,12 @@ const Dashboard = () => {
                         color="danger"
                         value="69"
                       />
+                      <CProgress
+                        className="progress-xs"
+                        color="success"
+                        value="48"
+                      />
+
                     </div>
                   </div>
                   <div className="legend text-center">
@@ -297,12 +358,19 @@ const Dashboard = () => {
                         </CBadge>
                       </sup>
                       Visitor Parkers &nbsp;
+
                       <sup className="px-1">
                         <CBadge shape="pill" color="danger">
                           &nbsp;
                         </CBadge>
                       </sup>
-                      Season Parkers
+                      Season Parkers &nbsp;
+                      <sup className="px-1">
+                        <CBadge shape="pill" color="success">
+                          &nbsp;
+                        </CBadge>
+                      </sup>
+                      Disabled Parkers
                     </small>
                   </div>
                 </CCol>
