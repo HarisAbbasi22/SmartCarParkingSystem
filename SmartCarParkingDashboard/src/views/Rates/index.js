@@ -13,6 +13,9 @@ import {
   CForm,
   CFormGroup,
   CInput,
+  CDataTable,
+  CSwitch,
+  CLabel,
   CDropdown,
   CRow,
   CWidgetDropdown,
@@ -87,6 +90,39 @@ const Rates = (props) => {
 
   return (
     <>
+      {/* <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+              <h2>Package List</h2>
+            </CCardHeader>
+            <CCardBody>
+              <CDataTable
+                items={packages}
+                fields={[
+                  { key: "id", _classes: "text-center" },
+                  "name",
+                  "rate",
+                  "isAvailable",
+                  {
+                    key: 'count',
+                    _classes: "text-center",
+                    label: 'Sold',
+                  }
+                ]}
+                // loading={loading}
+                dark
+                hover
+                striped
+                bordered
+                size="sm"
+                itemsPerPage={10}
+                pagination
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow> */}
       <CRow>
         <h2>Rate per hour for Visitor Parkers</h2>
       </CRow>
@@ -139,6 +175,7 @@ const Rates = (props) => {
                   <CIcon name={"cilSettings"} size={"md"} />
                 </CDropdownToggle>
                 <CDropdownMenu className="p-0" placement="bottom-end">
+                  <CDropdownItem>Edit rate</CDropdownItem>
                   <CDropdownItem>Delete rate</CDropdownItem>
                 </CDropdownMenu>
               </CDropdown>
@@ -158,8 +195,10 @@ const Rates = (props) => {
 
 export default Rates;
 
-const RateCard = ({ id, name, rate, handleGetPackages }) => {
+const RateCard = ({ id, count, name, isAvailable, rate, handleGetPackages }) => {
   const [inputValue, setinputValue] = useState("");
+  const [isAvailableValue, setIsAvailableValue] = useState(isAvailable);
+
 
   async function handleSetPackage(id) {
     console.log(id);
@@ -178,20 +217,53 @@ const RateCard = ({ id, name, rate, handleGetPackages }) => {
         setinputValue("");
       });
   }
+
+  async function handleSetAvailability(value) {
+
+    setIsAvailableValue(value);
+    db.collection("Packages")
+      .doc(id)
+      .update({
+        isAvailable: value,
+      })
+      .then(() => {
+        console.log("success");
+        // handleGetPackages();
+
+      })
+      .catch((error) => {
+        console.log(error, "error from handleSetAvailability");
+        // setinputValue("");
+      });
+  }
   return (
-    <CRow>
-      <CCol md="4">
-        <CCard>
+    <CRow className="mb-4">
+      <CCol md="4" className="pr-0">
+        <CCard className="h-100">
           <CCardHeader>Add Rate</CCardHeader>
           <CCardBody>
             <CForm action="" method="post">
-              <CCol md="6">
-                <CFormGroup className="pr-1">
+              <CCol md="12">
+                <CFormGroup className="pr-1 d-flex">
                   <CInput
-                    id="exampleInputName2"
+                    id="rate"
                     required
                     value={inputValue}
                     onInput={(e) => setinputValue(e.target.value)}
+                  />
+
+                </CFormGroup>
+                <CFormGroup className="d-flex align-items-center">
+                  <CLabel className="mr-2" htmlFor="floor">Available</CLabel>
+                  <CSwitch
+                    className="mr-1"
+                    color="primary"
+                    defaultChecked={isAvailableValue}
+                    onChange={(event) =>
+                      handleSetAvailability(
+                        event.target.checked,
+                      )
+                    }
                   />
                 </CFormGroup>
               </CCol>
@@ -204,35 +276,41 @@ const RateCard = ({ id, name, rate, handleGetPackages }) => {
               color="primary"
               onClick={() => handleSetPackage(id)}
             >
-              <CIcon name="cil-scrubber" /> Add
+              <CIcon name="cil-scrubber" /> Edit
             </CButton>
           </CCardFooter>
         </CCard>
       </CCol>
-      <div className={"row mt-15"}>
-        <div className={"col-30"}>
-          <CWidgetDropdown
-            color="gradient-primary"
-            header={name}
-            text={rate ? <>${rate}</> : "loading"}
-            footerSlot={
-              <div
-                className={"text-center"}
-                style={{ height: "122px", width: "250px" }}
-              ></div>
-            }
-          >
-            <CDropdown>
-              <CDropdownToggle color="transparent">
-                <CIcon name={"cilSettings"} size={"md"} />
-              </CDropdownToggle>
-              <CDropdownMenu className="p-0" placement="bottom-end">
-                <CDropdownItem>Delete rate</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
-          </CWidgetDropdown>
-        </div>
-      </div>
-    </CRow>
+
+      <CCol md="4" className="pl-0 ">
+        <CWidgetDropdown
+          style={{ height: "100%" }}
+          color="gradient-primary"
+          header={name}
+          text={rate ? <>${rate}</> : "loading"}
+          footerSlot={
+            <div
+
+              className="text-center mb-4"
+            >
+              <h2>Sold: {count}</h2>
+            </div>
+          }
+        >
+          <CDropdown>
+            <CDropdownToggle color="transparent">
+              <CIcon name={"cilSettings"} size={"md"} />
+            </CDropdownToggle>
+            <CDropdownMenu className="p-0" placement="bottom-end">
+              <CDropdownItem>Delete Package</CDropdownItem>
+              <CDropdownItem>Edit Package</CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
+        </CWidgetDropdown>
+      </CCol>
+
+
+
+    </CRow >
   );
 };

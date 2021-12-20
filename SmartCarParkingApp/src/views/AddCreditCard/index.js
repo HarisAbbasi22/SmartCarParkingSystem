@@ -162,7 +162,6 @@ class index extends Component {
       let payment_data = await this.charges();
       if (payment_data.status === "succeeded") {
         if (this.state.from === "BuyPackage") {
-          console.log("", this.state.package_id, this.state.package_name);
           firestore()
             .collection("Users")
             .doc(auth().currentUser.uid)
@@ -171,6 +170,12 @@ class index extends Component {
               package_id: this.state.package_id,
             })
             .then((data) => {
+              firestore()
+                .collection("Packages")
+                .doc(this.state.package_id)
+                .update({
+                  count: firestore.FieldValue.increment(1),
+                });
               Alert.alert(
                 "Success",
                 `You have bought ${this.state.package_name}`

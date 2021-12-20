@@ -59,24 +59,19 @@ export default class index extends Component {
     }
   };
 
-  onPackage = (package_id, package_name, rate) => {
-    // firestore()
-    //   .collection('Users')
-    //   .doc(auth().currentUser.uid)
-    //   .update({
-    //     seasonParker: package_id ? true : false,
-    //     package_id,
-    //   })
-    //   .then(data => {
-    //     Alert.alert('Success', `You have bought ${package_name}`);
-    //     this.props.navigation.goBack();
-    //   });
-    this.props.navigation.navigate("AddCreditCard", {
-      from: "BuyPackage",
-      package_id,
-      package_name,
-      rate,
-    });
+  onPackage = (package_id, package_name, rate, available) => {
+    if (available)
+      this.props.navigation.navigate("AddCreditCard", {
+        from: "BuyPackage",
+        package_id,
+        package_name,
+        rate,
+      });
+    else
+      Alert.alert(
+        "Sorry!",
+        "The package you've chosen is full at this moment!"
+      );
   };
 
   render() {
@@ -94,7 +89,14 @@ export default class index extends Component {
             data={this.state.packages}
             renderItem={({ item, index }) => (
               <TouchableOpacity
-                onPress={() => this.onPackage(item.id, item.name, item.rate)}
+                onPress={() =>
+                  this.onPackage(
+                    item.id,
+                    item.name,
+                    item.rate,
+                    item.isAvailable
+                  )
+                }
                 style={{
                   paddingVertical: 15,
                   borderWidth: 1,

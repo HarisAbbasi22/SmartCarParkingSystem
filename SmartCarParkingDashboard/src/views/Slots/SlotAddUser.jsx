@@ -111,7 +111,7 @@ export default function SlotAddUser() {
   const GetUserSlot = (userSID) => {
     const data = allSlot?.filter((item) => item.slot_id === userSID);
 
-    return data ? data[0].slot : "none";
+    return data && data.length > 0 ? data[0].slot : "none";
   };
 
   const handleFloorName = (floor) => {

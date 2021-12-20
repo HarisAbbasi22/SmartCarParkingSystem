@@ -146,23 +146,46 @@ class ParkingSlots extends Component {
   };
 
   onSlot() {
-    const user = auth().currentUser;
-    firestore().collection("Users").doc(user.uid).update({
-      slot_id: this.state.selectedId,
-    });
     firestore()
-      .collection("AllSlots")
-      .where("slot_id", "==", this.state.selectedId)
+      .collection("Users")
+      .doc(auth().currentUser.uid)
       .get()
       .then((data) => {
-        data.forEach((docs) => {
-          this.props.navigation.navigate("ParkingTime");
-          firestore().collection("AllSlots").doc(docs.data().slot_id).update({
-            booked: true,
+        firestore()
+          .collection("RegisteredVehicles")
+          .where("LicensePlateNo", "==", data.data().LicensePlateNo)
+          .get()
+          .then((res) => {
+            if (res.docs.length > 0) {
+              const user = auth().currentUser;
+              firestore().collection("Users").doc(user.uid).update({
+                slot_id: this.state.selectedId,
+              });
+              firestore()
+                .collection("AllSlots")
+                .where("slot_id", "==", this.state.selectedId)
+                .get()
+                .then((data) => {
+                  data.forEach((docs) => {
+                    this.props.navigation.navigate("ParkingTime");
+                    firestore()
+                      .collection("AllSlots")
+                      .doc(docs.data().slot_id)
+                      .update({
+                        booked: true,
+                      });
+                  });
+                });
+              this.setState({ selectedId: "" });
+            } else {
+              Alert.alert(
+                "Sorry!",
+                "Your car is not inside the parking garage"
+              );
+              return;
+            }
           });
-        });
       });
-    this.setState({ selectedId: "" });
   }
 
   render() {

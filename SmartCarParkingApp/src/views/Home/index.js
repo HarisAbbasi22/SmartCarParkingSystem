@@ -214,27 +214,7 @@ export default class index extends Component {
         <View>
           <TouchableOpacity
             onPress={() => {
-              firestore()
-                .collection("Users")
-                .doc(auth().currentUser.uid)
-                .get()
-                .then((data) => {
-                  firestore()
-                    .collection("RegisteredVehicles")
-                    .where("LicensePlateNo", "==", data.data().LicensePlateNo)
-                    .get()
-                    .then((res) => {
-                      if (res.docs.length > 0) {
-                        this.props.navigation.navigate("ParkingSlots");
-                      } else {
-                        alert;
-                        Alert.alert(
-                          "Sorry!",
-                          "Your car is not inside the parking garage"
-                        );
-                      }
-                    });
-                });
+              this.props.navigation.navigate("ParkingSlots");
             }}
             style={{
               paddingVertical: 15,

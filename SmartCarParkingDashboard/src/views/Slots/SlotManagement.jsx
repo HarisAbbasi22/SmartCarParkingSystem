@@ -24,8 +24,17 @@ import EditSlot from "./Components/EditSlot";
 
 const fields = [
   {
+    key: "serialNumber",
+    _style: { width: "20%" },
+    label: "Serial Number",
+    filter: false,
+    sorter: false,
+  },
+  {
     key: "slot",
     label: "Slot Name",
+    _style: { width: "20%" },
+    _props: { color: "primary", className: "fw-semibold" },
   },
   {
     key: "floor",
@@ -34,9 +43,20 @@ const fields = [
   {
     key: "booked",
     label: "Booked",
+    _style: { width: "20%" },
   },
-  "edit",
-  "delete",
+  {
+    key: "edit",
+    label: "",
+    filter: false,
+    sorter: false,
+  },
+  {
+    key: "delete",
+    label: "",
+    filter: false,
+    sorter: false,
+  },
 ];
 export default function SlotManagement() {
   const [seasonParker, setSeasonParker] = useState([]);
@@ -150,11 +170,26 @@ export default function SlotManagement() {
               hover
               striped
               bordered
+              columnFilter
+              columnSorter
+              tableFilter
+              sorterValue={{ column: "slot", state: "asc" }}
               size="sm"
-              sorter={"asc"}
+              columnFilterValue={["slot", "floor", "booked"]}
+              // tableFilter
+              // tableFilterOptions={{
+              //   names: ["slot", "floor", "booked", "edit", "delete"],
+              // }}
+              sorter
+              itemsPerPageSelect
               itemsPerPage={10}
               pagination
               scopedSlots={{
+                serialNumber: (item, idx) => (
+                  <td>
+                    <span className="">{idx + 1}</span>
+                  </td>
+                ),
                 slot: (item) => (
                   <td>
                     <div>
